@@ -1,4 +1,4 @@
-DNMP（Docker + Nginx/Openresty + MySQL5,8 + PHP5,7,8 + Redis + ElasticSearch + MongoDB + RabbitMQ）是一款全功能的**LNMP一键安装程序，支持Arm CPU**。
+DNMP（orbstack + Nginx/Openresty + MySQL5,8 + mariadb + PHP7,8 + consol + kafka+ zookeeper + nacos  + Redis + ElasticSearch + MongoDB + RabbitMQ）是一款全功能的**LNMP一键安装程序，支持Arm CPU**。
 
 **基于 https://github.com/yeszao/dnmp 修改**
 
@@ -65,7 +65,6 @@ DNMP（Docker + Nginx/Openresty + MySQL5,8 + PHP5,7,8 + Redis + ElasticSearch + 
     - [8.5 容器内的php如何连接宿主机MySQL](#85-容器内的php如何连接宿主机mysql)
     - [8.6 SQLSTATE\[HY000\] \[1130\] Host '172.19.0.2' is not allowed to connect to this MySQL server](#86-sqlstatehy000-1130-host-1721902-is-not-allowed-to-connect-to-this-mysql-server)
     - [8.7 Docker是如何生成容器名](#87-docker是如何生成容器名)
-  - [感谢 Navicat 对开源项目的赞助](#感谢-navicat-对开源项目的赞助)
   - [License](#license)
 
 
@@ -571,10 +570,6 @@ docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
 
 ### 8.7 Docker是如何生成容器名
 [在不指定容器名称时,是如何生成容器名](https://pet2cattle.com/2022/08/docker-container-names-generator)
-
-
-## 感谢 Navicat 对开源项目的赞助
-[![navicat](https://s1.locimg.com/2024/09/12/e6e96ae680447.png)](https://www.navicat.com/)
 
 ## License
 MIT
