@@ -41,9 +41,9 @@ services:
     build:
       context: ./services/php
       args:
-        PHP_VERSION: php:${PHP_VERSION}-fpm-alpine
+        PHP_VERSION: php:${PHP80_VERSION}-fpm-alpine
         CONTAINER_PACKAGE_URL: ${CONTAINER_PACKAGE_URL}
-        PHP_EXTENSIONS: ${PHP_EXTENSIONS}
+        PHP_EXTENSIONS: ${PHP80_EXTENSIONS}
         TZ: "$TZ"
     container_name: php
     expose:
@@ -52,9 +52,9 @@ services:
       - "www.site1.com:172.17.0.1"
     volumes:
       - ${SOURCE_DIR}:/www/:rw
-      - ${PHP_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
-      - ${PHP_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
-      - ${PHP_LOG_DIR}:/var/log/php
+      - ${PHP80_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+      - ${PHP80_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
+      - ${PHP80_LOG_DIR}:/var/log/php
       - ${DATA_DIR}/composer:/tmp/composer
     restart: always
     cap_add:
