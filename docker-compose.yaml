@@ -84,29 +84,29 @@ services:
   #     - default
 
 
-  php80:
-    build:
-      context: ./services/php80
-      args:
-        PHP_VERSION: php:${PHP80_VERSION}-fpm-alpine
-        CONTAINER_PACKAGE_URL: ${CONTAINER_PACKAGE_URL}
-        COMPOSER_URL: ${COMPOSER_URL}
-        PHP_EXTENSIONS: ${PHP80_EXTENSIONS}
-        TZ: "$TZ"
-    container_name: php80
-    expose:
-      - 9501
-    volumes:
-      - ${SOURCE_DIR}:/www/:rw
-      - ${PHP80_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
-      - ${PHP80_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
-      - ${PHP80_LOG_DIR}:/var/log/php
-      - ${DATA_DIR}/composer:/tmp/composer
-    restart: always
-    cap_add:
-      - SYS_PTRACE
-    networks:
-      - default
+  # php80:
+  #   build:
+  #     context: ./services/php80
+  #     args:
+  #       PHP_VERSION: php:${PHP80_VERSION}-fpm-alpine
+  #       CONTAINER_PACKAGE_URL: ${CONTAINER_PACKAGE_URL}
+  #       COMPOSER_URL: ${COMPOSER_URL}
+  #       PHP_EXTENSIONS: ${PHP80_EXTENSIONS}
+  #       TZ: "$TZ"
+  #   container_name: php80
+  #   expose:
+  #     - 9501
+  #   volumes:
+  #     - ${SOURCE_DIR}:/www/:rw
+  #     - ${PHP80_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+  #     - ${PHP80_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
+  #     - ${PHP80_LOG_DIR}:/var/log/php
+  #     - ${DATA_DIR}/composer:/tmp/composer
+  #   restart: always
+  #   cap_add:
+  #     - SYS_PTRACE
+  #   networks:
+  #     - default
 
   #  php74:
   #     build:
@@ -133,27 +133,6 @@ services:
   #       - SYS_PTRACE
   #     networks:
   #      - default
-
-  # mariadb:
-  #   image: mariadb
-  #   container_name: "mariadb"
-  #   restart: always
-  #   environment:
-  #     MARIADB_AUTO_UPGRADE: "yes"
-  #     MYSQL_USER: "root"
-  #     MYSQL_PASSWORD: "123456"
-  #     MYSQL_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
-  #     MYSQL_ROOT_HOST: "${MARIADB_ROOT_HOST}"
-  #     TZ: "$TZ"
-  #   # command: --default-authentication-plugin=mysql_native_password
-  #   ports:
-  #     - "${MARIADB_HOST_PORT}:3306"
-  #   volumes:
-  #     - ${MARIADB_CONF_FILE}:/etc/mysql/conf.d/mysql.cnf:ro
-  #     - ${DATA_DIR}/mariadb:/var/lib/mysql/:rw
-  #     - ${MARIADB_LOG_DIR}:/var/log/mysql
-  #   networks:
-  #     - default
 
   nacos:
     image: nacos/nacos-server:${NACOS_VERSION}
@@ -205,6 +184,27 @@ services:
     networks:
       - default
 
+  # mariadb:
+  #   image: mariadb:latest  # 建议指定具体版本号，如 mariadb:10.6
+  #   container_name: "mariadb"
+  #   restart: always  # 自动重启策略
+  #   environment:
+  #     MARIADB_AUTO_UPGRADE: "yes"  # 自动升级 MariaDB 数据库
+  #     MYSQL_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD:-default_password}" # 默认 root 密码，若未提供则使用 default_password
+  #     MYSQL_ROOT_HOST: "${MARIADB_ROOT_HOST:-%}" # 默认允许所有主机访问 (%)
+  #     MYSQL_USER: "root"  # 使用 root 用户
+  #     MYSQL_PASSWORD: "123456"  # root 用户密码
+  #     TZ: "${TZ:-Asia/Shanghai}"  # 设置时区，默认 Asia/Shanghai
+  #   ports:
+  #     - "${MARIADB_HOST_PORT:-3306}:3306"  # 映射主机端口，默认 3306
+  #   volumes:
+  #     - "${MARIADB_CONF_FILE:-./mariadb.conf}:/etc/mysql/conf.d/mysql.cnf:ro" # 配置文件挂载为只读
+  #     - "${DATA_DIR:-./data}/mariadb:/var/lib/mysql/:rw" # 数据存储目录，挂载为读写
+  #     - "${MARIADB_LOG_DIR:-./logs}:/var/log/mysql" # 日志存储目录
+  #   networks:
+  #     - default  # 默认网络
+
+
   redis:
     image: redis:${REDIS_VERSION}
     container_name: redis
@@ -250,45 +250,46 @@ services:
     networks:
       - default
 
-  zookeeper:
-    image: wurstmeister/zookeeper
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
-    networks:
-      - default
-  kafka:
-    image: wurstmeister/kafka
-    container_name: kafka
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_ADVERTISED_HOST_NAME: localhost ## 广播主机名称，一般用IP指定
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_LOG_RETENTION_HOURS: 120
-      KAFKA_MESSAGE_MAX_BYTES: 10000000
-      KAFKA_REPLICA_FETCH_MAX_BYTES: 10000000
-      KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS: 60000
-      KAFKA_NUM_PARTITIONS: 3
-      KAFKA_DELETE_RETENTION_MS: 1000
-      KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_BROKER_ID: 1
-    networks:
-      - default
+  # zookeeper:
+  #   image: wurstmeister/zookeeper
+  #   container_name: zookeeper
+  #   ports:
+  #     - "2181:2181"
+  #   networks:
+  #     - default
 
-  kafka-manager:
-    image: sheepkiller/kafka-manager
-    container_name: kafka-manager
-    environment:
-      ZK_HOSTS: localhost ## 修改:宿主机IP
-    ports:
-      - "9009:9000"
-    networks:
-      - default
+  # kafka:
+  #   image: wurstmeister/kafka
+  #   container_name: kafka
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     KAFKA_ADVERTISED_HOST_NAME: localhost ## 广播主机名称，一般用IP指定
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_PORT: 9092
+  #     KAFKA_LOG_RETENTION_HOURS: 120
+  #     KAFKA_MESSAGE_MAX_BYTES: 10000000
+  #     KAFKA_REPLICA_FETCH_MAX_BYTES: 10000000
+  #     KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS: 60000
+  #     KAFKA_NUM_PARTITIONS: 3
+  #     KAFKA_DELETE_RETENTION_MS: 1000
+  #     KAFKA_LISTENERS: PLAINTEXT://:9092
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+  #     KAFKA_BROKER_ID: 1
+  #   networks:
+  #     - default
+
+  # kafka-manager:
+  #   image: sheepkiller/kafka-manager
+  #   container_name: kafka-manager
+  #   environment:
+  #     ZK_HOSTS: localhost ## 修改:宿主机IP
+  #   ports:
+  #     - "9009:9000"
+  #   networks:
+  #     - default
 
   # mysql5:
   #   image: mysql:${MYSQL5_VERSION}
